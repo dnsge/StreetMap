@@ -2,23 +2,35 @@
 
 namespace UnrealBuildTool.Rules
 {
-  public class StreetMapRuntime : ModuleRules
-  {
-    public StreetMapRuntime(ReadOnlyTargetRules Target)
-    : base(Target)
-    {
-      PrivateDependencyModuleNames.AddRange(
-        new string[] {
-          "Core",
-          "CoreUObject",
-          "Engine",
-          "RHI",
-          "RenderCore",
-          "PropertyEditor"
-        }
-      );
+	public class StreetMapRuntime : ModuleRules
+	{
+        public StreetMapRuntime(ReadOnlyTargetRules Target) : base(Target)
+        {
+            PrivatePCHHeaderFile = "StreetMapRuntime.h";
+            PrivateDependencyModuleNames.AddRange(
+                new string[] {
+                    "Core",
+                    "CoreUObject",
+                    "Engine",
+                    "RHI",
+                    "RenderCore",
+                    "Renderer",
+                    "Landscape"
+                }
+            );
 
-      PrivateIncludePaths.AddRange(new string[]{"StreetMapRuntime/Private"});
-    }
-  }
+            PublicDependencyModuleNames.AddRange(
+                new string[]
+                {
+                    "GeometricObjects",
+                    "ProceduralMeshComponent"
+                }
+            );
+
+            if (Target.bBuildEditor == true)
+            {
+                PrivateDependencyModuleNames.Add("PropertyEditor");
+            }
+        }
+	}
 }

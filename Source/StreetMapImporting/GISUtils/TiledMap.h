@@ -1,0 +1,75 @@
+#pragma once
+
+class FTiledMap
+{
+private:
+
+	FTiledMap() {};
+
+public:
+
+	struct FBounds
+	{
+		double MinX;
+		double MinY;
+		double MaxX;
+		double MaxY;
+	};
+
+	uint32 TileWidth;
+	uint32 TileHeight;
+	uint32 NumLevels;
+	FBounds Bounds;
+	FString URLTemplate;
+	
+	static FTiledMap MapzenElevation()
+	{
+		// Mapzen, U.S. Geological Survey, and U.S. National Oceanic and Atmospheric Administration
+		// see details: https://aws.amazon.com/de/public-datasets/terrain/
+		FTiledMap TiledMap;
+		TiledMap.TileWidth = 256;
+		TiledMap.TileHeight = 256;
+		TiledMap.NumLevels = 15;
+		TiledMap.Bounds.MinX = -20037508.34;
+		TiledMap.Bounds.MinY =  20037508.34;
+		TiledMap.Bounds.MaxX =  20037508.34;
+		TiledMap.Bounds.MaxY = -20037508.34;
+		//TiledMap.URLTemplate = TEXT("http://s3.amazonaws.com/elevation-tiles-prod/terrarium/%d/%d/%d.png");
+		TiledMap.URLTemplate = TEXT("https://tile.nextzen.org/tilezen/terrain/v1/{tilesize}/terrarium/{z}/{x}/{y}.png?api_key=FXmfItfESV2TN11tL0C_Iw");
+		/*
+		https://tile.nextzen.org/tilezen/terrain/v1/{tilesize}/terrarium/{z}/{x}/{y}.png?api_key=your-nextzen-api-key
+		https://tile.nextzen.org/tilezen/terrain/v1/{tilesize}/normal/{z}/{x}/{y}.png?api_key=your-nextzen-api-key
+		https://tile.nextzen.org/tilezen/terrain/v1/geotiff/{z}/{x}/{y}.tif?api_key=your-nextzen-api-key
+		https://tile.nextzen.org/tilezen/terrain/v1/skadi/{N|S}{y}/{N|S}{y}{E|W}{x}.hgt.gz?api_key=your-nextzen-api-key
+		*/
+		return TiledMap;
+	}
+
+	FIntPoint GetTileXY(double X, double Y, uint32 LevelIndex) const
+	{
+		const double RelativeX = (X - Bounds.MinX) / (Bounds.MaxX - Bounds.MinX);
+		const double RelativeY = (Y - Bounds.MinY) / (Bounds.MaxY - Bounds.MinY);
+		const uint32 NumTiles = 1 << LevelIndex;
+		const double AbsoluteX = RelativeX * NumTiles;
+		const double AbsoluteY = RelativeY * NumTiles;
+		const FIntPoint TileXY = FIntPoint((int32)AbsoluteX, (int32)AbsoluteY);
+
+		return TileXY;
+	}
+
+	FIntPoint GetTileXY(double X, double Y, uint32 LevelIndex, FVector2D& OutPixelXY) const
+	{
+		const double RelativeX = (X - Bounds.MinX) / (Bounds.MaxX - Bounds.MinX);
+		const double RelativeY = (Y - Bounds.MinY) / (Bounds.MaxY - Bounds.MinY);
+		const uint32 NumTiles = 1 << LevelIndex;
+		const double AbsoluteX = RelativeX * NumTiles;
+		const double AbsoluteY = RelativeY * NumTiles;
+		const FIntPoint TileXY = FIntPoint((int32)AbsoluteX, (int32)AbsoluteY);
+
+		OutPixelXY.X = (AbsoluteX - (double)TileXY.X) * (double)TileWidth;
+		OutPixelXY.Y = (AbsoluteY - (double)TileXY.Y) * (double)TileHeight;
+
+		return TileXY;
+	}
+};
+

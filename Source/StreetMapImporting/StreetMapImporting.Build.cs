@@ -2,34 +2,45 @@
 
 namespace UnrealBuildTool.Rules
 {
-  public class StreetMapImporting : ModuleRules
-  {
-    public StreetMapImporting(ReadOnlyTargetRules Target)
-    : base(Target)
+    public class StreetMapImporting : ModuleRules
     {
-      PrivateDependencyModuleNames.AddRange(
-        new string[] {
-          "Core",
-          "CoreUObject",
-          "Engine",
-          "UnrealEd",
-          "XmlParser",
-          "AssetTools",
-          "Projects",
-          "Slate",
-          "EditorStyle",
-          "SlateCore",
-          "PropertyEditor",
-          "RenderCore",
-          "RHI",
-          "RawMesh",
-          "AssetTools",
-          "AssetRegistry",
-          "StreetMapRuntime"
-        }
-      );
+        public StreetMapImporting(ReadOnlyTargetRules Target) : base(Target)
+        {
+            bEnforceIWYU = false;
 
-      PrivateIncludePaths.AddRange(new string[]{"StreetMapImporting/Private"});
+            PrivatePCHHeaderFile = "StreetMapImporting.h";
+            PrivateDependencyModuleNames.AddRange(
+                new string[] {
+                    "Core",
+                    "CoreUObject",
+                    "Engine",
+                    "XmlParser",
+                    "AssetTools",
+                    "Projects",
+                    "Slate",
+                    "EditorStyle",
+                    "SlateCore",
+                    "UnrealEd",
+                    "PropertyEditor",
+                    "RenderCore",
+                    "RHI",
+                    "RawMesh",
+                    "AssetTools",
+                    "AssetRegistry",
+                    "StreetMapRuntime",
+                    "HTTP",
+                    "ImageWrapper",
+                    "DesktopPlatform",
+                    "Landscape",
+                    "CinematicCamera"
+                }
+            );
+
+            PrivateIncludePaths.AddRange(
+                new string[] {
+                    "Developer/DesktopPlatform/Public",
+                }
+            );
+        }
     }
-  }
 }
